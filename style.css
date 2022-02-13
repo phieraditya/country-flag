@@ -26,15 +26,16 @@ body {
 }
 
 .countries {
+  margin-bottom: 8rem;
   display: flex;
   font-size: 2rem;
-  /* opacity: 0;
-  transition: opacity 1s; */
+  opacity: 0;
+  transition: opacity 1s;
 }
 
 .country {
   background-color: #fff;
-  box-shadow: 0 2rem 5rem 1rem rgba(0,0,0,0.1);
+  box-shadow: 0 2rem 5rem 1rem rgba(0, 0, 0, 0.1);
   font-size: 1.8rem;
   width: 30rem;
   border-radius: 0.7rem;
@@ -104,4 +105,5 @@ body {
   color: #fff;
   background-color: orangered;
   cursor: pointer;
+  opacity: 0;
 }
