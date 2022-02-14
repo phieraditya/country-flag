@@ -57,12 +57,12 @@ const getCountryAndNeighbour = function (country) {
   })
 }
 
-getCountryAndNeighbour('laos')
+getCountryAndNeighbour('myanmar')
 
 ///////////////////////////////////////////////////
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v2/name/${country}`)
     .then((response) => response.json())
-    .then((data) => console.log(data))
+    .then((data) => renderCountry(data[0]))
 }
-getCountryData('malaysia')
+getCountryData('brunei')
