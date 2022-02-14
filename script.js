@@ -32,7 +32,7 @@ const getCountryAndNeighbour = function (country) {
 
   request.addEventListener('load', function () {
     const [data] = JSON.parse(this.responseText)
-    console.log(data)
+    // console.log(data)
 
     // Render country 1
     renderCountry(data)
@@ -49,7 +49,7 @@ const getCountryAndNeighbour = function (country) {
 
     request2.addEventListener('load', function () {
       const data2 = JSON.parse(this.responseText)
-      console.log(data2)
+      // console.log(data2)
 
       // Render country 2
       renderCountry(data2, 'neighbour')
@@ -58,3 +58,16 @@ const getCountryAndNeighbour = function (country) {
 }
 
 getCountryAndNeighbour('laos')
+
+///////////////////////////////////////////////////
+const getCountryData = function (country) {
+  fetch(`https://restcountries.com/v2/name/${country}`)
+    .then(function (response) {
+      console.log(response)
+      return response.json()
+    })
+    .then(function (data) {
+      console.log(data)
+    })
+}
+getCountryData('philippine')
