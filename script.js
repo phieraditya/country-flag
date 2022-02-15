@@ -24,13 +24,15 @@ const renderCountry = function (data, className = '') {
   countriesContainer.style.opacity = 1
 }
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentHTML('beforeend', msg)
+  countriesContainer.style.opacity = 1
+}
+
 // Country 1
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v2/name/${country}`)
-    .then(
-      (response) => response.json(),
-      (err) => alert(err)
-    )
+    .then((response) => response.json())
     .then((data) => {
       renderCountry(data[0])
       const neighbour = data[0].borders[0]
@@ -40,11 +42,12 @@ const getCountryData = function (country) {
       // Country 2
       return fetch(`https://restcountries.com/v2/alpha/${neighbour}`)
     })
-    .then(
-      (response) => response.json(),
-      (err) => alert(err)
-    )
+    .then((response) => response.json())
     .then((data) => renderCountry(data, 'neighbour'))
+    .catch((err) => {
+      console.error(`${err} 💥💥`)
+      renderError(`Something went wrong 💥 ${err.message}. Try again!`)
+    })
 }
 
 btn.addEventListener('click', function () {
