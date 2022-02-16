@@ -52,7 +52,7 @@ const getCountryData = function (country) {
     })
     .then((data) => renderCountry(data, 'neighbour'))
     .catch((err) => {
-      console.error(`${err} 💥💥💥`)
+      console.error(`${err.message} 💥💥💥`)
       renderError(`Something went wrong 💥💥 ${err.message}. Try again!`)
     })
     .finally(() => {
@@ -61,7 +61,36 @@ const getCountryData = function (country) {
 }
 
 btn.addEventListener('click', function () {
-  getCountryData('france')
+  getCountryData('russia')
 })
 
-getCountryData('iceland')
+///////////////////////////////////////////////////
+
+// Reverse Geocoding
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then((res) => {
+      if (!res.ok) throw new Error(`Problem with geocoding (${res.status})`)
+
+      return res.json()
+    })
+    .then((data) => {
+      console.log(data)
+      console.log(`You are in ${data.city}, ${data.country}`)
+
+      // Render country
+      return fetch(`https://restcountries.com/v2/name/${data.country}`)
+    })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Country not found (${res.status})`)
+
+      return res.json()
+    })
+    .then((data) => renderCountry(data[0]))
+    .catch((err) => console.error(`💣  ${err.message} 💣`))
+    .finally(() => (countriesContainer.style.opacity = 1))
+}
+
+// whereAmI(50.1213479, 8.4964807)
+whereAmI(9.0583811, -79.529354)
+// whereAmI(-8.4960683, 115.2485298)
