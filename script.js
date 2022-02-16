@@ -14,7 +14,7 @@ const renderCountry = function (data, className = '') {
           <H4 class="country__region">${data.region}</H4>
           <p class="country__row"><span>👫</span>${(
             data.population / 1000000
-          ).toFixed(1)} people</p>
+          ).toFixed(1)}M people</p>
           <p class="country__row"><span>🗣 </span>${data.languages[0].name}</p>
           <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
         </div>
@@ -30,7 +30,12 @@ const renderError = function (msg) {
 // Country 1
 const getCountryData = function (country) {
   fetch(`https://restcountries.com/v2/name/${country}`)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`)
+
+      return response.json()
+    })
     .then((data) => {
       renderCountry(data[0])
       const neighbour = data[0].borders[0]
@@ -40,7 +45,12 @@ const getCountryData = function (country) {
       // Country 2
       return fetch(`https://restcountries.com/v2/alpha/${neighbour}`)
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`)
+
+      return response.json()
+    })
     .then((data) => renderCountry(data, 'neighbour'))
     .catch((err) => {
       console.error(`${err} 💥💥`)
@@ -50,5 +60,7 @@ const getCountryData = function (country) {
 }
 
 btn.addEventListener('click', function () {
-  getCountryData('laos')
+  getCountryData('france')
 })
+
+getCountryData('sldhfoahroah')
