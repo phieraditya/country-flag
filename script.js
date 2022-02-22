@@ -101,6 +101,9 @@ const whereAmI = async function () {
     return `You are in ${dataGeo.city}, ${dataGeo.country}`
   } catch (err) {
     renderError(`${err.message}`)
+
+    // Reject promise returned from async function
+    throw err
   }
 }
 
