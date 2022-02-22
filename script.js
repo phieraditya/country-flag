@@ -106,16 +106,25 @@ const getPosition = function () {
 //     .finally(() => (countriesContainer.style.opacity = 1))
 // }
 
-// btn.addEventListener('click', whereAmI)
-
 ///////////////////////////////////////////////////
 
-const whereAmI = async function (country) {
-  const response = await fetch(`https://restcountries.com/v2/name/${country}`)
+const whereAmI = async function () {
+  // Geolocation
+  const pos = await getPosition()
+  const { latitude: lat, longitude: lng } = pos.coords
+
+  // Reverse geocoding
+  const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+  const dataGeo = await resGeo.json()
+  console.log(dataGeo)
+
+  // Country data
+  const response = await fetch(
+    `https://restcountries.com/v2/name/${dataGeo.country}`
+  )
   const data = await response.json()
   console.log(data)
   renderCountry(data[0])
 }
 
-whereAmI('spain')
-console.log('FIRST')
+btn.addEventListener('click', whereAmI)
