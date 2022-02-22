@@ -35,6 +35,8 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
   })
 }
 
+///////////////////////////////////////////////////
+
 // Country 1
 const getCountryData = function (country) {
   getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
@@ -60,9 +62,9 @@ const getCountryData = function (country) {
     })
 }
 
-btn.addEventListener('click', function () {
-  getCountryData('russia')
-})
+// btn.addEventListener('click', function () {
+//   getCountryData('russia')
+// })
 
 ///////////////////////////////////////////////////
 
@@ -74,8 +76,12 @@ const getPosition = function () {
 }
 
 // Reverse Geocoding
-const whereAmI = function (lat, lng) {
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+const whereAmI = function () {
+  getPosition()
+    .then((pos) => {
+      const { latitude: lat, longitude: lng } = pos.coords
+      return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    })
     .then((res) => {
       if (!res.ok) throw new Error(`Problem with geocoding (${res.status})`)
 
@@ -98,6 +104,4 @@ const whereAmI = function (lat, lng) {
     .finally(() => (countriesContainer.style.opacity = 1))
 }
 
-// whereAmI(50.1213479, 8.4964807)
-whereAmI(9.0583811, -79.529354)
-// whereAmI(-8.4960683, 115.2485298)
+btn.addEventListener('click', whereAmI)
