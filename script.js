@@ -77,54 +77,32 @@ const getPosition = function () {
   })
 }
 
-// Reverse Geocoding
-// const whereAmI = function () {
-//   getPosition()
-//     .then((pos) => {
-//       const { latitude: lat, longitude: lng } = pos.coords
-//       return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-//     })
-//     .then((res) => {
-//       if (!res.ok) throw new Error(`Problem with geocoding (${res.status})`)
-
-//       return res.json()
-//     })
-//     .then((data) => {
-//       console.log(data)
-//       console.log(`You are in ${data.city}, ${data.country}`)
-
-//       // Render country
-//       return fetch(`https://restcountries.com/v2/name/${data.country}`)
-//     })
-//     .then((res) => {
-//       if (!res.ok) throw new Error(`Country not found (${res.status})`)
-
-//       return res.json()
-//     })
-//     .then((data) => renderCountry(data[0]))
-//     .catch((err) => console.error(`💣  ${err.message} 💣`))
-//     .finally(() => (countriesContainer.style.opacity = 1))
-// }
-
-///////////////////////////////////////////////////
-
 const whereAmI = async function () {
-  // Geolocation
-  const pos = await getPosition()
-  const { latitude: lat, longitude: lng } = pos.coords
+  try {
+    // Geolocation
+    const pos = await getPosition()
+    const { latitude: lat, longitude: lng } = pos.coords
 
-  // Reverse geocoding
-  const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-  const dataGeo = await resGeo.json()
-  console.log(dataGeo)
+    // Reverse geocoding
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    if (!resGeo.ok) throw new Error(`Problem getting location data 💥💥`)
 
-  // Country data
-  const response = await fetch(
-    `https://restcountries.com/v2/name/${dataGeo.country}`
-  )
-  const data = await response.json()
-  console.log(data)
-  renderCountry(data[0])
+    const dataGeo = await resGeo.json()
+    console.log(dataGeo)
+
+    // Country data
+    const response = await fetch(
+      `https://restcountries.com/v2/name/${dataGeo.country}`
+    )
+    if (!response.ok) throw new Error(`Problem getting country 💥💥`)
+
+    const data = await response.json()
+    console.log(data)
+    renderCountry(data[0])
+  } catch (err) {
+    console.error(`${err}💥💥`)
+    renderError(`${err.message}`)
+  }
 }
 
 btn.addEventListener('click', whereAmI)
