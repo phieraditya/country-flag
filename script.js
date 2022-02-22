@@ -66,6 +66,16 @@ btn.addEventListener('click', function () {
 
 ///////////////////////////////////////////////////
 
+// Get Position
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve(position),
+      (error) => reject(error)
+    )
+  })
+}
+
 // Reverse Geocoding
 const whereAmI = function (lat, lng) {
   fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
