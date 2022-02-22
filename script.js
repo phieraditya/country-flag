@@ -21,10 +21,12 @@ const renderCountry = function (data, className = '') {
       </article>
   `
   countriesContainer.insertAdjacentHTML('beforeend', html)
+  countriesContainer.style.opacity = 1
 }
 
 const renderError = function (msg) {
   countriesContainer.insertAdjacentHTML('beforeend', msg)
+  countriesContainer.style.opacity = 1
 }
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
@@ -57,9 +59,9 @@ const getCountryData = function (country) {
       console.error(`${err.message} 💥💥💥`)
       renderError(`Something went wrong 💥💥 ${err.message}. Try again!`)
     })
-    .finally(() => {
-      countriesContainer.style.opacity = 1
-    })
+  // .finally(() => {
+  //   countriesContainer.style.opacity = 1
+  // })
 }
 
 // btn.addEventListener('click', function () {
@@ -76,32 +78,44 @@ const getPosition = function () {
 }
 
 // Reverse Geocoding
-const whereAmI = function () {
-  getPosition()
-    .then((pos) => {
-      const { latitude: lat, longitude: lng } = pos.coords
-      return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-    })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Problem with geocoding (${res.status})`)
+// const whereAmI = function () {
+//   getPosition()
+//     .then((pos) => {
+//       const { latitude: lat, longitude: lng } = pos.coords
+//       return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+//     })
+//     .then((res) => {
+//       if (!res.ok) throw new Error(`Problem with geocoding (${res.status})`)
 
-      return res.json()
-    })
-    .then((data) => {
-      console.log(data)
-      console.log(`You are in ${data.city}, ${data.country}`)
+//       return res.json()
+//     })
+//     .then((data) => {
+//       console.log(data)
+//       console.log(`You are in ${data.city}, ${data.country}`)
 
-      // Render country
-      return fetch(`https://restcountries.com/v2/name/${data.country}`)
-    })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Country not found (${res.status})`)
+//       // Render country
+//       return fetch(`https://restcountries.com/v2/name/${data.country}`)
+//     })
+//     .then((res) => {
+//       if (!res.ok) throw new Error(`Country not found (${res.status})`)
 
-      return res.json()
-    })
-    .then((data) => renderCountry(data[0]))
-    .catch((err) => console.error(`💣  ${err.message} 💣`))
-    .finally(() => (countriesContainer.style.opacity = 1))
+//       return res.json()
+//     })
+//     .then((data) => renderCountry(data[0]))
+//     .catch((err) => console.error(`💣  ${err.message} 💣`))
+//     .finally(() => (countriesContainer.style.opacity = 1))
+// }
+
+// btn.addEventListener('click', whereAmI)
+
+///////////////////////////////////////////////////
+
+const whereAmI = async function (country) {
+  const response = await fetch(`https://restcountries.com/v2/name/${country}`)
+  const data = await response.json()
+  console.log(data)
+  renderCountry(data[0])
 }
 
-btn.addEventListener('click', whereAmI)
+whereAmI('spain')
+console.log('FIRST')
