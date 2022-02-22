@@ -69,10 +69,7 @@ btn.addEventListener('click', function () {
 // Get Position
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => resolve(position),
-      (error) => reject(error)
-    )
+    navigator.geolocation.getCurrentPosition(resolve, reject)
   })
 }
 
