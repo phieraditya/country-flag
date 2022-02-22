@@ -88,7 +88,6 @@ const whereAmI = async function () {
     if (!resGeo.ok) throw new Error(`Problem getting location data 💥💥`)
 
     const dataGeo = await resGeo.json()
-    console.log(dataGeo)
 
     // Country data
     const response = await fetch(
@@ -97,12 +96,18 @@ const whereAmI = async function () {
     if (!response.ok) throw new Error(`Problem getting country 💥💥`)
 
     const data = await response.json()
-    console.log(data)
     renderCountry(data[0])
+
+    return `You are in ${dataGeo.city}, ${dataGeo.country}`
   } catch (err) {
-    console.error(`${err}💥💥`)
     renderError(`${err.message}`)
   }
 }
 
-btn.addEventListener('click', whereAmI)
+// btn.addEventListener('click', whereAmI)
+
+console.log('1: Will get location')
+whereAmI()
+  .then((city) => console.log(`2: ${city}`))
+  .catch((err) => console.error(`2: ${err.message}`))
+console.log('3: Finished getting location')
