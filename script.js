@@ -1,9 +1,13 @@
 'use strict';
 
+///////////////////////////////////////////////////
+// Select Elements
+
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////////////////
+// Render
 
 const renderCountry = function (data, className = '') {
   const html = `
@@ -21,13 +25,14 @@ const renderCountry = function (data, className = '') {
       </article>
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
 };
 
 const renderError = function (msg) {
   countriesContainer.insertAdjacentHTML('beforeend', msg);
-  countriesContainer.style.opacity = 1;
 };
+
+///////////////////////////////////////////////////
+// Helper to fetch API data
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
   return fetch(url).then((response) => {
@@ -38,15 +43,15 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 };
 
 ///////////////////////////////////////////////////
-
 // Country 1
 const getCountryData = function (country) {
   getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found')
     .then((data) => {
       renderCountry(data[0]);
       const neighbour = data[0].borders[0];
+      console.log(data[0].borders);
 
-      if (!neighbour) throw new Error('No neighbour found!');
+      if (!neighbour) throw new Error('No neighbour found');
 
       // Country 2
       return getJSON(
@@ -56,101 +61,13 @@ const getCountryData = function (country) {
     })
     .then((data) => renderCountry(data, 'neighbour'))
     .catch((err) => {
-      console.error(`${err.message} 💥💥💥`);
       renderError(`Something went wrong 💥💥 ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
     });
-  // .finally(() => {
-  //   countriesContainer.style.opacity = 1
-  // })
 };
 
-// btn.addEventListener('click', function () {
-//   getCountryData('russia')
-// })
-
-///////////////////////////////////////////////////
-
-// Get Position
-const getPosition = function () {
-  return new Promise(function (resolve, reject) {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
-};
-
-const whereAmI = async function () {
-  try {
-    // Geolocation
-    const pos = await getPosition();
-    const { latitude: lat, longitude: lng } = pos.coords;
-
-    // Reverse geocoding
-    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
-    if (!resGeo.ok) throw new Error(`Problem getting location data 💥💥`);
-
-    const dataGeo = await resGeo.json();
-
-    // Country data
-    const response = await fetch(
-      `https://restcountries.com/v2/name/${dataGeo.country}`
-    );
-    if (!response.ok) throw new Error(`Problem getting country 💥💥`);
-
-    const data = await response.json();
-    renderCountry(data[0]);
-
-    return `You are in ${dataGeo.city}, ${dataGeo.country}`;
-  } catch (err) {
-    renderError(`${err.message}`);
-
-    // Reject promise returned from async function
-    throw err;
-  }
-};
-
-// btn.addEventListener('click', whereAmI)
-
-console.log('1: Will get location');
-
-(async function () {
-  try {
-    const city = await whereAmI();
-    console.log(`2: ${city}`);
-  } catch (err) {
-    console.error(`2: ${err.message}💥💥`);
-  }
-  console.log('3: Finished getting location');
-})();
-
-///////////////////////////////////////////////////
-// Multiple countries
-const get3Countries = async function (c1, c2, c3) {
-  try {
-    const data = await Promise.all([
-      getJSON(`https://restcountries.com/v2/name/${c1}`),
-      getJSON(`https://restcountries.com/v2/name/${c2}`),
-      getJSON(`https://restcountries.com/v2/name/${c3}`),
-    ]);
-    console.log(data.map((d) => d[0].capital));
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-get3Countries('ghana', 'mozambique', 'africa');
-
-///////////////////////////////////////////////////
-// Extra
-// Request took too long!
-const timeout = function (sec) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error('Request took too long!'));
-    }, sec * 1000);
-  });
-};
-
-Promise.race([getJSON(`https://restcountries.com/v2/name/iran`), timeout(5)])
-  .then((res) => console.log(res[0]))
-  .catch((err) => console.error(err));
-
-//
+btn.addEventListener('click', function () {
+  getCountryData('timor');
+});
