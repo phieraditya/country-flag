@@ -3,8 +3,12 @@
 ///////////////////////////////////////////////////
 // Select Elements
 
-const btn = document.querySelector('.btn-country');
+const btnCountry = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+
+const search = document.querySelector('.search');
+const btn = document.querySelector('.btn');
+const input = document.querySelector('.input');
 
 ///////////////////////////////////////////////////
 // Render
@@ -68,6 +72,13 @@ const getCountryData = function (country) {
     });
 };
 
-btn.addEventListener('click', function () {
+btnCountry.addEventListener('click', function () {
   getCountryData('timor');
+});
+
+btn.addEventListener('click', function () {
+  search.classList.toggle('active');
+  input.focus();
+  getCountryData(`${input.value}`);
+  console.log(input.value);
 });
